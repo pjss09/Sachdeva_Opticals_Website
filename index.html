@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACHDEVA OPTICALS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Use provided logo as favicon and apple-touch icon; fall back to svg if png not available -->
+    <link rel="icon" type="image/png" href="/images/favicon-32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16.png" sizes="16x16">
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/images/favicon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+    <a class="skip-link" href="#product-gallery">Skip to content</a>
+    <header>
+        <div class="topbar container">
+            <div class="topbar-left">
+                <a href="index.html" class="site-logo-link"><img src="images/logo.png" alt="Sachdeva Opticals" class="site-logo" onerror="this.onerror=null;this.src='images/logo.svg'"/></a>
+                <span class="tagline">Quality eyewear & eye care</span>
+            </div>
+            <div class="topbar-right">
+                <a href="tel:9927375074" class="muted">📞 9927375074</a>
+                <a href="mailto:sachdevaopticals2368@gmail.com" class="muted">✉️ sachdevaopticals2368@gmail.com</a>
+            </div>
+        </div>
+
+        <div class="nav-bar container">
+            <div class="nav-left">
+                <button id="mobile-menu-btn" class="mobile-menu-btn">☰</button>
+                <a class="logo" href="index.html">SACHDEVA</a>
+            </div>
+            <div class="nav-center">
+                <input id="search-input" placeholder="Search frames, sunglasses, lenses..." aria-label="Search frames, sunglasses, lenses" />
+            </div>
+            <div class="nav-right">
+                <nav>
+                    <ul class="nav-list">
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                        <li><a href="dashboard.html">Admin</a></li>
+                    </ul>
+                </nav>
+                <a href="#" id="cart-link" title="Cart" class="cart-link" aria-label="Open cart">
+                    <img src="images/icon-cart.svg" alt="Cart" style="height:20px;vertical-align:middle;"/>
+                    <span id="cart-count" class="cart-badge" aria-hidden="false">0</span>
+                </a>
+            </div>
+        </div>
+        <!-- Live region for a11y announcements -->
+        <div id="a11y-live" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+        <!-- Mobile overlay nav -->
+        <div id="mobile-nav-overlay" class="mobile-nav-overlay" aria-hidden="true">
+            <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Close menu">&times;</button>
+            <ul class="mobile-nav-list">
+                <li><a href="#products">Products</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+                <li><a href="dashboard.html">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section id="home" class="hero" aria-label="Hero">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <h2>Eyewear that fits your life</h2>
+                <p class="lead">Premium frames, lenses and expert eye care in Rudrapur. Comfortable fit, modern styles, and same-day adjustments.</p>
+                <div class="hero-ctas">
+                    <a href="#products" class="button btn-primary">Shop Frames</a>
+                    <a href="#contact" class="button btn-ghost">Book an Eye Test</a>
+                </div>
+                <div class="hero-trust">
+                    <span>🏆 Trusted local opticians</span>
+                    <span>👓 Free adjustments</span>
+                    <span>⭐ 4.8 Customer rating</span>
+                </div>
+            </div>
+            <div class="hero-media">
+                <div class="hero-card">
+                    <img src="images/eyeglasses.svg" alt="Stylish eyeglasses">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <div class="section-head">
+                <h2>Featured Frames</h2>
+                <p class="muted">Hand-picked styles — updated regularly.</p>
+            </div>
+            <div id="product-gallery" class="product-gallery" aria-live="polite">
+                <!-- product cards populated by script.js; static fallback is still available in the HTML when JS is disabled -->
+            </div>
+            <div style="text-align:center;margin-top:18px"><a href="product.html" class="button btn-outline">Browse all products</a></div>
+        </div>
+    </section>
+
+    <!-- Product detail modal -->
+    <div id="product-modal" class="product-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <button id="modal-close" class="modal-close" aria-label="Close dialog">&times;</button>
+            <div id="modal-body" tabindex="-1"></div>
+        </div>
+    </div>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="service-list">
+                <div class="service">
+                    <i class="fas fa-eye"></i>
+                    <h3>Comprehensive Eye Exams</h3>
+                    <p>Thorough eye exams with trusted professionals.</p>
+                </div>
+                <div class="service">
+                    <i class="fas fa-glasses"></i>
+                    <h3>Frame Fitting</h3>
+                    <p>Perfect fit and adjustments for lasting comfort.</p>
+                </div>
+                <div class="service">
+                    <i class="fas fa-wrench"></i>
+                    <h3>Repair & Adjust</h3>
+                    <p>Quick on-site repairs and realignment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container contact-grid">
+            <div class="contact-details">
+                <h2>Contact & Store Details</h2>
+                <p><strong>SACHDEVA OPTICALS</strong></p>
+                <p>S.G.A.D COMPLEX, RUDRAPUR, UTTARAKHAND</p>
+                <p>Phone: <a href="tel:9927375074">9927375074</a></p>
+                <p>Email: <a href="mailto:sachdevaopticals2368@gmail.com">sachdevaopticals2368@gmail.com</a></p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/sachdevaopticals/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="https://www.facebook.com/SachdevaOpticalsRudrapur" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Facebook</a>
+                </div>
+            </div>
+            <div class="contact-form-wrap">
+                <h2>Send us a message</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="button">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4>SACHDEVA OPTICALS</h4>
+                <p>S.G.A.D COMPLEX, RUDRAPUR, UTTARAKHAND</p>
+                <p>Phone: <a href="tel:9927375074">9927375074</a></p>
+                <p>Email: <a href="mailto:sachdevaopticals2368@gmail.com">sachdevaopticals2368@gmail.com</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <p><a href="https://www.instagram.com/sachdevaopticals/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i> Instagram</a></p>
+                <p><a href="https://www.facebook.com/SachdevaOpticalsRudrapur" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Facebook</a></p>
+                <p style="margin-top:8px"><a href="about.html">About</a> | <a href="terms.html">Terms</a> | <a href="privacy.html">Privacy</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Hours</h4>
+                <p>Mon-Sat: 9:30 AM - 8:00 PM</p>
+                <p>Sun: Closed</p>
+            </div>
+        </div>
+    <div class="container" style="margin-top:12px;text-align:center;color:#ccc">&copy; 2025 SACHDEVA OPTICALS. All rights reserved.</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

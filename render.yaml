@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: sachdeva-opticals
+    env: node
+    plan: free
+    repo: <replace-with-your-github-repo-url>
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: '10000'
+      - key: NODE_ENV
+        value: 'production'
+    autoDeploy: true

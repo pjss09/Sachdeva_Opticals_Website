@@ -1,0 +1,23 @@
+﻿[
+    {
+        "id":  "p1",
+        "name":  "Eyeglasses",
+        "description":  "Stylish and comfortable eyeglasses.",
+        "price":  "49.99",
+        "image":  "images/eyeglasses.svg"
+    },
+    {
+        "id":  "p2",
+        "name":  "Sunglasses",
+        "description":  "Protect your eyes in style.",
+        "price":  "69.99",
+        "image":  "images/sunglasses.svg"
+    },
+    {
+        "id":  "p3",
+        "name":  "Contact Lenses",
+        "description":  "High-quality contact lenses.",
+        "price":  "29.99",
+        "image":  "images/contact-lenses.svg"
+    }
+]

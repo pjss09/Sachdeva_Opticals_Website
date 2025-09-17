@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Detail - SACHDEVA OPTICALS</title>
+  <link href="style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="topbar container">
+      <div class="topbar-left"><a href="index.html" class="site-logo-link"><img src="images/logo.png" alt="Sachdeva Opticals" class="site-logo" onerror="this.onerror=null;this.src='images/logo.svg'"/></a></div>
+      <div class="topbar-right">
+        <a href="tel:9927375074">📞 9927375074</a>
+        <a href="mailto:sachdevaopticals2368@gmail.com">✉️ sachdevaopticals2368@gmail.com</a>
+      </div>
+    </div>
+  </header>
+  <main class="container" style="padding:30px 0">
+    <div id="product-detail" class="product-detail">
+      <p>Loading product...</p>
+    </div>
+  </main>
+  <script>
+    async function loadProduct(){
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const wrap = document.getElementById('product-detail');
+    try{
+      const res = await fetch('/api/products/' + encodeURIComponent(id));
+      const p = await res.json();
+        if(!p) { wrap.innerHTML = '<p>Product not found</p>'; return; }
+        wrap.innerHTML = `
+          <div class="product-detail-grid">
+            <div class="gallery">
+              <div class="main-image zoom-wrap">
+                <img src="${p.image}" id="main-product-image" alt="${p.name}"/>
+                <div id="magnifier" class="magnifier" style="display:none"></div>
+              </div>
+              <div class="thumbs" id="thumbs"><!-- thumbnails populated by script --></div>
+            </div>
+            <div class="info">
+              <h1>${p.name}</h1>
+              <p class="muted">${p.description||''}</p>
+              <div class="price-block"><div class="price">$${Number(p.price).toFixed(2)}</div><div class="actions"><button id="add-cart" class="button">Add to Cart</button> <button id="add-wish" class="button" style="background:#ff9800;color:#fff">♥ Wishlist</button></div></div>
+              <div style="margin-top:12px"><button id="try-on" class="button" style="background:#fff;color:#007BFF;border:1px solid #007BFF">Try On (webcam)</button></div>
+              <div class="specs" style="margin-top:18px">
+                <h4>Product Details</h4>
+                <ul>
+                  <li>Material: Plastic/Metal</li>
+                  <li>Lens type: Single vision / Progressive (selectable)</li>
+                  <li>Frame size: Standard</li>
+                </ul>
+                  </div>
+                  <div class="reviews" style="margin-top:18px">
+                    <h4>Customer reviews</h4>
+                    <div id="reviews-list"><p>Loading reviews...</p></div>
+                    <div style="margin-top:8px">
+                      <h5>Leave a review</h5>
+                      <form id="review-form">
+                        <label>Rating</label>
+                        <select name="rating"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select>
+                        <label style="display:block;margin-top:8px">Comment</label>
+                        <textarea name="comment" required style="width:100%;height:80px"></textarea>
+                        <div style="margin-top:8px"><button type="submit" class="button">Submit review</button></div>
+                      </form>
+                    </div>
+                  </div>
+            </div>
+          </div>`;
+
+        document.getElementById('add-cart').addEventListener('click', ()=>{
+          const item = { id: p.id, name: p.name, price: p.price, image: p.image };
+          if (window.addToCart) { window.addToCart(item); alert('Added to cart'); } else { alert('Added to cart (local)'); }
+        });
+        document.getElementById('add-wish').addEventListener('click', ()=>{
+          const item = { id: p.id, name: p.name, price: p.price, image: p.image };
+          if (window.addToWishlist) window.addToWishlist(item);
+        });
+        document.getElementById('try-on').addEventListener('click', ()=>{
+          alert('Try-on is an experimental feature. Allow webcam access when prompted.');
+          // Simple client-side try-on placeholder (enhancement later)
+          const img = document.getElementById('main-product-image');
+          img.style.opacity = 0.6; setTimeout(()=>img.style.opacity=1,2000);
+        });
+        // load reviews
+        async function loadReviews(){
+          try{
+            const r = await fetch('/api/products/' + encodeURIComponent(p.id) + '/reviews');
+            const list = await r.json();
+            const node = document.getElementById('reviews-list');
+            if (!list || list.length === 0) node.innerHTML = '<p>No reviews yet.</p>';
+            else node.innerHTML = list.map(rv=>`<div style="border-top:1px solid #eee;padding:8px 0"><strong>${rv.username||'Customer'}</strong> <span style="color:#ffb400">${'★'.repeat(rv.rating)}</span><div style="color:#666">${rv.comment}</div><small style="color:#999">${new Date(rv.created_at).toLocaleString()}</small></div>`).join('');
+          }catch(e){ console.warn('reviews failed', e.message); }
+        }
+        loadReviews();
+
+        document.getElementById('review-form').addEventListener('submit', async function(e){ e.preventDefault(); const fd=new FormData(this); try{ const payload={ rating: fd.get('rating'), comment: fd.get('comment'), username: 'guest' }; const res = await fetch('/api/products/' + encodeURIComponent(p.id) + '/reviews', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }); if (res.ok){ alert('Thanks — your review will appear after approval.'); this.reset(); } else { alert('Failed to submit review'); } }catch(err){ alert('Failed to submit review: ' + err.message); } });
+
+        // populate thumbnails (main image + placeholders if available)
+        (function setupThumbs(){
+          const thumbsNode = document.getElementById('thumbs');
+          const imgs = [p.image, p.image.replace(/(\.png|\.jpg|\.jpeg|\.webp)$/i,'_2$1'), p.image.replace(/(\.png|\.jpg|\.jpeg|\.webp)$/i,'_3$1')];
+          thumbsNode.innerHTML = imgs.map(src => `<img src="${src}" class="thumb" onerror="this.style.opacity=0.6"/>`).join('');
+          thumbsNode.querySelectorAll('.thumb').forEach(t => t.addEventListener('click', ()=>{
+            const main = document.getElementById('main-product-image'); main.src = t.src; 
+          }));
+
+          // simple magnifier
+          const mainWrap = document.querySelector('.zoom-wrap');
+          const mainImg = document.getElementById('main-product-image');
+          const magn = document.getElementById('magnifier');
+          mainWrap.addEventListener('mousemove', function(e){
+            const rect = mainImg.getBoundingClientRect();
+            const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+            if (x<0||y<0||x>rect.width||y>rect.height) { magn.style.display='none'; return; }
+            magn.style.display='block';
+            magn.style.left = (x - 60) + 'px'; magn.style.top = (y - 60) + 'px';
+            magn.style.backgroundImage = `url(${mainImg.src})`;
+            const bgX = Math.round((x / rect.width) * 100); const bgY = Math.round((y / rect.height) * 100);
+            magn.style.backgroundPosition = `${bgX}% ${bgY}%`;
+          });
+          mainWrap.addEventListener('mouseleave', ()=>{ magn.style.display='none'; });
+        })();
+      }catch(e){ wrap.innerHTML = '<p>Unable to load product</p>'; }
+    }
+    loadProduct();
+  </script>
+</body>
+</html>

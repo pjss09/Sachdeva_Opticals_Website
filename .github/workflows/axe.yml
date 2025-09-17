@@ -1,0 +1,36 @@
+name: Axe accessibility checks
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  axe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Start server in background
+        run: |
+          npm start &
+          echo "Server starting..."
+
+      - name: Wait for server
+        run: npx wait-on http://127.0.0.1:4000 -t 30000
+
+      - name: Run axe action
+        uses: dequelabs/axe-action@v2
+        with:
+          url: http://127.0.0.1:4000
+          options: '{"runOnly": {"type":"tag","values":["wcag2a","wcag2aa"]}}'

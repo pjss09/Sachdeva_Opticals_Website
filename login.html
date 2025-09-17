@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Your Optical Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container" style="max-width:420px;margin:40px auto;padding:24px;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.08)">
+        <div style="text-align:center;margin-bottom:8px"><img src="images/logo.png" alt="Sachdeva Opticals" style="width:160px" onerror="this.onerror=null;this.src='images/logo.svg'"/></div>
+        <h2 style="margin-top:0">Admin Login</h2>
+        <p style="margin-bottom:12px;color:#666">Contact: <a href="mailto:sachdevaopticals2368@gmail.com">sachdevaopticals2368@gmail.com</a> | <a href="tel:9927375074">9927375074</a></p>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required style="padding:10px;margin-bottom:10px">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required style="padding:10px;margin-bottom:18px">
+            <div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><button type="submit" class="button" style="flex:1">Login</button><a href="index.html" style="margin-left:8px;color:#666">Back to shop</a></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            }).then(r => {
+                if (!r.ok) throw new Error('Invalid');
+                return r.json();
+            }).then(data => {
+                localStorage.setItem('admin_token', data.token);
+                window.location.href = 'dashboard.html';
+            }).catch(() => {
+                alert('Invalid username or password.');
+            });
+        });
+    </script>
+</body>
+</html>

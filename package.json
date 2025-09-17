@@ -1,0 +1,26 @@
+{
+  "name": "optical-store-demo",
+  "version": "1.0.0",
+  "description": "Demo Optical Store with simple Express backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test:e2e": "node ./tools/e2e_smoke_test.js",
+    "a11y": "node ./tools/run_a11y.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^8.0.0"
+  }
+  ,
+  "devDependencies": {
+    "pa11y": "^6.0.0"
+  }
+}

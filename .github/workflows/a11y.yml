@@ -1,0 +1,51 @@
+name: Accessibility checks (pa11y)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  a11y:
+    name: Run pa11y accessibility scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start server in background
+        run: |
+          npm start &
+          echo "Server starting..."
+
+      - name: Wait for server
+        run: npx wait-on http://127.0.0.1:4000 -t 30000
+      - name: Run pa11y accessibility script
+        run: npm run a11y
+
+      - name: Upload a11y report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-report
+          path: tools/a11y-results.json
+
+      - name: Create PR comment with a11y summary
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Accessibility scan results (pa11y)
+            Results are uploaded as an artifact named `a11y-report`.
+            Please download and review `tools/a11y-results.json` for details.

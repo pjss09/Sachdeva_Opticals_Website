@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Wishlist - SACHDEVA OPTICALS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="site-logo-link"><img src="images/logo.png" alt="Sachdeva Opticals" class="site-logo" onerror="this.onerror=null;this.src='images/logo.svg'"/></a>
+    <nav><a href="index.html">Shop</a> | <a href="wishlist.html">Wishlist</a> | <a href="dashboard.html">Admin</a></nav>
+  </header>
+  <main style="padding:16px">
+    <h2>Your wishlist</h2>
+    <div id="wishlist-container"></div>
+  </main>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){ renderWishlistPage(); });
+  </script>
+</body>
+</html>

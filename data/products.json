@@ -1,0 +1,5 @@
+[
+  { "id": "p1", "name": "Eyeglasses", "price": 49.99, "description": "Stylish and comfortable eyeglasses.", "image": "images/eyeglasses.svg" },
+  { "id": "p2", "name": "Sunglasses", "price": 69.99, "description": "Protect your eyes in style.", "image": "images/sunglasses.svg" },
+  { "id": "p3", "name": "Contact Lenses", "price": 29.99, "description": "High-quality contact lenses.", "image": "images/contact-lenses.svg" }
+]

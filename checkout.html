@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout - SACHDEVA OPTICALS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="container" style="padding:16px 0;display:flex;align-items:center;gap:12px">
+    <a href="index.html" class="site-logo-link"><img src="images/logo.png" alt="Sachdeva Opticals" class="site-logo" onerror="this.onerror=null;this.src='images/logo.svg'"/></a>
+    <a href="cart.html">← Back to cart</a>
+  </header>
+  <main class="container" style="padding:20px 0">
+    <h2>Checkout</h2>
+    <div id="checkout-root"></div>
+  </main>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // reuse drawer checkout form if present, otherwise render a simple checkout form
+      const root = document.getElementById('checkout-root');
+      if (!root) return;
+      const cart = getCart();
+      if (!cart || cart.length === 0) { root.innerHTML = '<p>Your cart is empty.</p>'; return; }
+      const total = cart.reduce((s,i)=>s + i.qty * Number(i.price), 0);
+      root.innerHTML = `<form id="checkout-form-inline"><label>Name</label><input name="name" required style="width:100%;padding:8px;margin:6px 0"/><label>Email</label><input name="email" required type="email" style="width:100%;padding:8px;margin:6px 0"/><label>Address</label><textarea name="address" required style="width:100%;padding:8px;margin:6px 0"></textarea><div style="margin-top:8px">Total: <strong>${formatPrice(total)}</strong></div><div style="margin-top:8px"><button type="submit" class="button">Place order</button></div></form>`;
+      document.getElementById('checkout-form-inline').addEventListener('submit', async function (e){ e.preventDefault(); const fd=new FormData(this); const order={ id: 'ORD'+Date.now(), customer:{ name: fd.get('name'), email: fd.get('email'), address: fd.get('address')}, items: cart, total}; try{ const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(order) }); if (res.ok){ const js = await res.json(); alert('Order placed: '+ (js.order?.id || order.id)); clearCart(); location.href='index.html'; } else { alert('Order failed'); } }catch(e){ alert('Order failed: ' + e.message); } });
+    });
+  </script>
+</body>
+</html>

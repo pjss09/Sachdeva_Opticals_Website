@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Your Optical Store</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="images/logo.png" alt="Sachdeva Opticals" style="width:140px;" onerror="this.onerror=null;this.src='images/logo.svg'" />
+                <div style="font-size:12px;margin-top:6px">S.G.A.D COMPLEX, RUDRAPUR</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="#appointments"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                    <li><a href="#customers"><i class="fas fa-users"></i> Customers</a></li>
+                    <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <div style="font-size:12px;color:#666">📞 9927375074 | sachdevaopticals2368@gmail.com</div>
+                </div>
+                <div class="user-profile">
+                    <span>Welcome, Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+
+            <!-- Key Metrics -->
+            <section class="metrics">
+                <div class="metric-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h3>Total Sales</h3>
+                    <p>$12,345</p>
+                </div>
+                <div class="metric-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Customers</h3>
+                    <p>1,234</p>
+                </div>
+                <div class="metric-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Appointments</h3>
+                    <p>56</p>
+                </div>
+                <div class="metric-card">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Orders</h3>
+                    <p>78</p>
+                </div>
+            </section>
+            <!-- Admin Products Management -->
+            <section id="admin-products" class="admin-products">
+                <h3>Products (Admin)</h3>
+                <div id="admin-login-area" style="margin-bottom:12px">
+                    <form id="admin-login-form" style="display:flex;gap:8px;align-items:center">
+                        <input name="username" placeholder="Admin username" value="admin" style="padding:8px">
+                        <input name="password" placeholder="Password" type="password" value="admin123" style="padding:8px">
+                        <button type="submit" style="padding:8px">Login</button>
+                        <button type="button" id="admin-logout" style="padding:8px;display:none">Logout</button>
+                    </form>
+                </div>
+                <div id="admin-products-container">
+                    <p>Loading product manager...</p>
+                </div>
+            </section>
+
+            <!-- Reviews moderation -->
+            <section id="admin-reviews" style="margin-top:20px">
+                <h3>Reviews moderation</h3>
+                <div id="reviews-moderation">Please login as admin to moderate reviews.</div>
+            </section>
+
+            <!-- Charts -->
+            <section class="charts">
+                <div class="chart-card">
+                    <h3>Sales Trends</h3>
+                    <canvas id="salesChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Customer Growth</h3>
+                    <canvas id="customerChart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        const salesChart = new Chart(document.getElementById('salesChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [5000, 7000, 9000, 12000, 10000, 15000],
+                    borderColor: '#007BFF',
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+
+    const customerChart = new Chart(document.getElementById('customerChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Customers',
+                    data: [100, 150, 200, 250, 300, 400],
+                    backgroundColor: '#007BFF',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+
+        // Fetch orders for admin and show a small orders table
+        async function loadOrders() {
+            const token = localStorage.getItem('admin_token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/orders', { headers: { 'Authorization': 'Bearer ' + token } });
+                if (!res.ok) throw new Error('unauth');
+                const orders = await res.json();
+                const container = document.createElement('div');
+                container.className = 'recent-orders';
+                container.innerHTML = '<h2>Recent Orders</h2>' + (orders.length ? '<table><thead><tr><th>Order</th><th>Customer</th><th>Total</th></tr></thead><tbody>' + orders.slice(0,10).map(o=>`<tr><td>${o.id}</td><td>${o.customer?.name||'-'}</td><td>${o.total||0}</td></tr>`).join('') + '</tbody></table>' : '<p>No orders yet.</p>');
+                document.querySelector('.main-content').appendChild(container);
+            } catch (e) {
+                console.warn('Could not load orders (not logged in?)');
+            }
+        }
+
+        loadOrders();
+        async function loadPendingReviews(){
+            const token = localStorage.getItem('admin_token');
+            const container = document.getElementById('reviews-moderation');
+            if (!token){ container.innerHTML = '<p>Please login as admin to moderate reviews.</p>'; return; }
+            try{
+                const res = await fetch('/api/admin/reviews', { headers: { 'Authorization': 'Bearer ' + token } });
+                if (!res.ok) throw new Error('unauth');
+                const list = await res.json();
+                if (!list || list.length === 0) { container.innerHTML = '<p>No reviews.</p>'; return; }
+                const rows = list.map(r=>`<div style="border-bottom:1px solid #eee;padding:8px 0" data-id="${r.id}"><strong>${r.username||'guest'}</strong> (${r.product_id}) <div style="color:#666">${r.comment}</div><div style="margin-top:6px">Rating: ${r.rating} | Approved: ${r.approved}</div><div style="margin-top:6px"><button class="approve-review" data-id="${r.id}">Approve</button> <button class="delete-review" data-id="${r.id}" style="background:#f44336;color:#fff">Delete</button></div></div>`).join('');
+                container.innerHTML = rows;
+                container.querySelectorAll('.approve-review').forEach(b=>b.addEventListener('click', async function(){ const id=this.dataset.id; try{ const rr = await fetch('/api/admin/reviews/' + encodeURIComponent(id) + '/approve', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token } }); if (rr.ok){ alert('Approved'); loadPendingReviews(); } else alert('Failed'); }catch(e){ alert('Failed'); } }));
+                container.querySelectorAll('.delete-review').forEach(b=>b.addEventListener('click', async function(){ const id=this.dataset.id; if(!confirm('Delete review?')) return; try{ const rr = await fetch('/api/admin/reviews/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } }); if (rr.ok){ alert('Deleted'); loadPendingReviews(); } else alert('Failed'); }catch(e){ alert('Failed'); } }));
+            }catch(e){ container.innerHTML = '<p>Could not load reviews (not logged in).</p>'; }
+        }
+        // call periodically if admin is logged in
+        setTimeout(loadPendingReviews, 800);
+    </script>
+</body>
+</html>
